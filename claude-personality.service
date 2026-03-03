@@ -1,0 +1,10 @@
+[Unit]
+Description=Generate daily Claude personality
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/claude-personality-gen
+StandardOutput=journal
+StandardError=journal
