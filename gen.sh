@@ -34,6 +34,7 @@ echo "$personality" > "$out"
 
 # push it into ~/.claude/CLAUDE.md so every claude session picks it up
 touch "$claude_md"
+cp "$claude_md" "${claude_md}.bak"
 block="<!-- daily-personality-start -->
 $personality
 <!-- daily-personality-end -->"
