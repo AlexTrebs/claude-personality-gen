@@ -7,6 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p ~/.local/bin
 ln -sf "$SCRIPT_DIR/gen.sh" ~/.local/bin/claude-personality-gen
 chmod +x "$SCRIPT_DIR/gen.sh"
+# SessionStart hook target (see README): prints today's personality + why
+ln -sf "$SCRIPT_DIR/show.sh" ~/.local/bin/claude-personality-show
+chmod +x "$SCRIPT_DIR/show.sh"
 
 # 2. systemd or cron
 if systemctl --user status &>/dev/null; then

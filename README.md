@@ -39,10 +39,27 @@ The installer will:
 
 The script is idempotent — running it multiple times in a day is safe.
 
+## Show it when Claude Code starts
+
+The model also returns a one-line reason, saved to `~/.claude/personality/<date>.why`.
+`show.sh` (linked as `claude-personality-show`) prints a snippet plus that reason as a
+`systemMessage`. Add it to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      { "matcher": "startup", "hooks": [{ "type": "command", "command": "~/.local/bin/claude-personality-show" }] }
+    ]
+  }
+}
+```
+
 ## Files
 
 ```
 gen.sh                      # main script
+show.sh                     # SessionStart hook: prints today's personality + why
 install.sh                  # installer
 claude-personality.service  # systemd user service unit
 claude-personality.timer    # systemd user timer unit
