@@ -42,7 +42,7 @@ The script is idempotent — running it multiple times in a day is safe.
 ## Files
 
 ```
-claude_personality_gen.sh   # main script
+gen.sh                      # main script
 install.sh                  # installer
 claude-personality.service  # systemd user service unit
 claude-personality.timer    # systemd user timer unit

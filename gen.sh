@@ -14,14 +14,16 @@ headlines=$(curl -fsSL "https://feeds.bbci.co.uk/news/rss.xml" 2>/dev/null \
   | grep -oP '(?<=<title>)[^<]+' | tail -n +2 | head -5 | paste -sd '; ') \
   || headlines="nothing notable"
 
-prev=$(ls "$dir"/*.md 2>/dev/null | sort | tail -3 | xargs cat 2>/dev/null || true)
+# Newest by mtime: names are DD-MM-YYYY, so a name sort orders by day of month
+prev=$(ls -t "$dir"/*.md 2>/dev/null | head -3 | xargs cat 2>/dev/null || true)
 
 prompt="It's $today. News: $headlines
 
 Recent personalities (don't repeat these):
 $prev
 
-Give me a short 1-2 sentence personality for an AI assistant. Anything goes — be weird, specific, unexpected."
+Give me a short 1-2 sentence personality for an AI assistant. Anything goes — be weird, specific, unexpected.
+Reply with only the personality: no preamble, no follow-up question."
 
 personality=$(claude -p "$prompt" --model claude-haiku-4-5-20251001 2>/dev/null) \
   || { echo "claude call failed, skipping"; exit 0; }
