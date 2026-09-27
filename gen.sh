@@ -10,21 +10,26 @@ mkdir -p "$dir"
 [ -f "$out" ] && exit 0
 
 
+# BBC wraps titles in CDATA; the feed's own title ("BBC News") appears twice
 headlines=$(curl -fsSL "https://feeds.bbci.co.uk/news/rss.xml" 2>/dev/null \
-  | grep -oP '(?<=<title>)[^<]+' | tail -n +2 | head -5 | paste -sd '; ') \
-  || headlines="nothing notable"
+  | grep -oP '<title>(<!\[CDATA\[)?\K[^<\]]+' | grep -vx 'BBC News' | head -5 \
+  | sed 's/^/- /') || true
+[ -n "$headlines" ] || headlines="(no headlines today)"
 
 # Newest by mtime: names are DD-MM-YYYY, so a name sort orders by day of month
 prev=$(ls -t "$dir"/*.md 2>/dev/null | head -3 | xargs cat 2>/dev/null || true)
 
-prompt="It's $today. News: $headlines
+prompt="It's $today. Today's news headlines:
+$headlines
 
 Recent personalities (don't repeat these):
 $prev
 
-Give me a short 1-2 sentence personality for an AI assistant. Anything goes — be weird, specific, unexpected.
-Reply with only the personality, then one final line starting with 'WHY: ' giving one
-sentence on what inspired it (e.g. which headline). No preamble, no follow-up question."
+Give me a short 1-2 sentence personality for an AI assistant, inspired by ONE of today's
+headlines above. Anything goes — be weird, specific, unexpected.
+Reply with only the personality, then one final line in exactly this form:
+WHY: \"<the headline you picked, verbatim>\" — <one full sentence on how the personality links to it>
+Plain text only (no markdown). No preamble, no follow-up question."
 
 personality=$(claude -p "$prompt" --model claude-haiku-4-5-20251001 2>/dev/null) \
   || { echo "claude call failed, skipping"; exit 0; }
