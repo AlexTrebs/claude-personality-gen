@@ -22,6 +22,8 @@ fi
 # 3. optional hyprland
 if [ -f ~/.config/hypr/hyprland.conf ]; then
     read -rp "Add exec-once to hyprland.conf? [y/N] " ans
-    [[ "$ans" =~ ^[Yy]$ ]] && echo "exec-once = $HOME/.local/bin/claude-personality-gen" >> ~/.config/hypr/hyprland.conf
+    if [[ "$ans" =~ ^[Yy]$ ]]; then
+        echo "exec-once = $HOME/.local/bin/claude-personality-gen" >> ~/.config/hypr/hyprland.conf
+    fi
 fi
 
